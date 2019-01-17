@@ -42,14 +42,23 @@ public class AccountController : Controller
 
             DirectoryEntry entry = new DirectoryEntry("LDAP://SR010010.medi.local:389/DC=medi,DC=Local");
             DirectorySearcher search = new DirectorySearcher(entry);
-            
-                
-            var u = search.PropertiesToLoad.Add("memberof");
-            var u1= search.FindOne().Properties.Values;
+            search.Filter = "(SAMAccountName=" + model.UserName + ")";
+            search.PropertiesToLoad.Add("distinguishedName");
+            search.PropertiesToLoad.Add("displayName");
+            search.PropertiesToLoad.Add("mail");
+            search.PropertiesToLoad.Add("CN");
+            search.PropertiesToLoad.Add("Title");
+            search.PropertiesToLoad.Add("sn");
+            search.PropertiesToLoad.Add("givenname");
+            search.PropertiesToLoad.Add("telephoneNumber");
+            search.PropertiesToLoad.Add("memberOf");
+
             SearchResult result = search.FindOne();
             
+            var u1 = search.FindOne().Properties.Values;
 
-                return this.RedirectToAction("Index", "Home");
+
+            return this.RedirectToAction("Index", "Home");
         } 
 
         this.ModelState.AddModelError(string.Empty, "The user name or password provided is incorrect.");
