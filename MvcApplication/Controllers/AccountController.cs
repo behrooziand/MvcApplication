@@ -1,7 +1,14 @@
 ﻿using System.Web.Mvc;
 using System.Web.Security;
-
+using System.DirectoryServices;
 using MvcApplication.Models;
+using System.Security.Principal;
+using System.Configuration;
+using System.Security;
+using Galactic.ActiveDirectory;
+using System.DirectoryServices.Protocols;
+using System.Collections.Generic;
+using System;
 
 public class AccountController : Controller
 {
@@ -26,19 +33,45 @@ public class AccountController : Controller
             {
                 return this.Redirect(returnUrl);
             }
+            //DirectoryEntry entry = new DirectoryEntry("LDAP://SR010010.medi.local:389/DC=medi,DC=Local");
+            //DirectorySearcher mySearcher = new DirectorySearcher(entry);
+            //mySearcher.Filter = "(&(objectClass=user)(|(cn=" + model.UserName + ")(sAMAccountName=" + model.UserName + ")))";
+            //mySearcher.PropertiesToLoad.Add("memberOf");
+            //SearchResult result = mySearcher.FindOne();
+            //var u = 
 
-            return this.RedirectToAction("Index", "Home");
-        }
+            DirectoryEntry entry = new DirectoryEntry("LDAP://SR010010.medi.local:389/DC=medi,DC=Local");
+            DirectorySearcher search = new DirectorySearcher(entry);
+            
+                
+            var u = search.PropertiesToLoad.Add("memberof");
+            var u1= search.FindOne().Properties.Values;
+            SearchResult result = search.FindOne();
+            
+
+                return this.RedirectToAction("Index", "Home");
+        } 
 
         this.ModelState.AddModelError(string.Empty, "The user name or password provided is incorrect.");
 
         return this.View(model);
+    }
+    public string GetProperty(SearchResult searchResult,string PropertyName)
+    {
+        if (searchResult.Properties.Contains(PropertyName))
+        {
+            return searchResult.Properties[PropertyName][0].ToString();
+        }
+        else
+        {
+            return string.Empty;
+        }
     }
 
     public ActionResult LogOff()
     {
         FormsAuthentication.SignOut();
 
-        return this.RedirectToAction("Index", "Home");
+        return this.RedirectToAction("Login", "Account");
     }
 }
