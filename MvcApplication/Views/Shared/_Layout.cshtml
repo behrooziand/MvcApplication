@@ -24,6 +24,21 @@
                     <li>@Html.ActionLink("Startseite", "Index", "Home")</li>
                     <li>@Html.ActionLink("Info", "About", "Home")</li>
                     <li>@Html.ActionLink("Kontakt", "Contact", "Home")</li>
+                    @if (Request.IsAuthenticated && User.IsInRole("_test_idtool_admin"))
+                    {
+                        <li>@Html.ActionLink("test1", "test1", "test")</li>
+                        <li>@Html.ActionLink("test2", "test2", "test")</li>
+                    }
+                    @if (Request.IsAuthenticated && User.IsInRole("access_jobWorker_user"))
+                    {
+                        <li>@Html.ActionLink("test3", "test3", "test")</li>
+                    }
+                    @if (Request.IsAuthenticated && User.IsInRole("access_jobWorker_user"))
+                    {
+                        <li>@Html.ActionLink("test4", "test4", "test")</li>
+                    }
+
+                    
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
